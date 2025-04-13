@@ -1,8 +1,41 @@
 :root {
-    --primary: deeppink;
     --bgnd: #333;
-    --edge: #ddd;
+    --edge: #555;
     --black: black;
+    --p1: deeppink;
+    --p2: dodgerblue;
+    --primary: var(--p1);
+}
+
+body.p1 {
+    img.left {
+        background-color: var(--p1);
+    }
+    img.right {
+        background-color: var(--edge);
+    }
+    #boxes_p1 {
+        color: var(--p1);
+    }
+    #boxes_p2 {
+        color: var(--edge);
+    }
+}
+
+body.p2 {
+    --primary: var(--p2);
+    img.left {
+        background-color: var(--edge);
+    }
+    img.right {
+        background-color: var(--p2);
+    }
+    #boxes_p1 {
+        color: var(--edge);
+    }
+    #boxes_p2 {
+        color: var(--p2);
+    }
 }
 
 body {
@@ -13,6 +46,13 @@ body {
 h1 {
     font-family: sans-serif;
     color: var(--primary);
+}
+
+img {
+    display: inline-block;
+    border-radius: 4px;
+    background-color: var(--edge);
+    margin: 0 10px;
 }
 
 .grid-container {
@@ -50,6 +90,31 @@ h1 {
 .v-edge:hover {
     background-color: var(--primary);
     opacity: 0.5;
+}
+
+/* edges selected */
+.edge.p1 {
+    background-color: var(--p1);
+    opacity: 1;
+    pointer-events: none !important;
+}
+
+.edge.p2 {
+    background-color: var(--p2);
+    opacity: 1;
+    pointer-events: none !important;
+}
+
+.h-edge.p1,
+.h-edge.p2 {
+    height: 10px;
+    margin-top: -3px;
+}
+
+.v-edge.p1,
+.v-edge.p2 {
+    width: 10px;
+    margin-left: -3px;
 }
 
 /* Vertices: small circles */
