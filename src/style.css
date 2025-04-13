@@ -14,10 +14,10 @@ body.p1 {
     img.right {
         background-color: var(--edge);
     }
-    #boxes_p1 {
+    #box_count_p1 {
         color: var(--p1);
     }
-    #boxes_p2 {
+    #box_count_p2 {
         color: var(--edge);
     }
 }
@@ -30,10 +30,10 @@ body.p2 {
     img.right {
         background-color: var(--p2);
     }
-    #boxes_p1 {
+    #box_count_p1 {
         color: var(--edge);
     }
-    #boxes_p2 {
+    #box_count_p2 {
         color: var(--p2);
     }
 }
@@ -70,6 +70,15 @@ img {
     height: var(--square);
     box-sizing: border-box;
     border: 4px solid var(--edge);
+    opacity: 0.8;
+}
+
+.grid-square.p1 {
+    background-color: var(--p1);
+}
+
+.grid-square.p2 {
+    background-color: var(--p2);
 }
 
 /* edges */
