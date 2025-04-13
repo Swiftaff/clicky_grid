@@ -43,6 +43,10 @@ body {
     background-color: var(--bgnd);
 }
 
+h2 {
+    user-select: none;
+}
+
 h1,
 div,
 h2 {
@@ -58,6 +62,7 @@ img {
 }
 
 #winner {
+    user-select: none;
     display: none;
     color: white;
     border-radius: 4px;
@@ -77,6 +82,10 @@ img {
     background-color: var(--p2);
     display: inline-block;
     cursor: pointer;
+}
+
+#grid_size {
+    user-select: none;
 }
 
 #grid_size h2 {
@@ -99,6 +108,7 @@ img {
 }
 
 #play {
+    user-select: none;
     display: block;
     width: 200px;
     margin: 0 auto 20px auto;
@@ -113,6 +123,7 @@ img {
 }
 
 #games {
+    user-select: none;
     color: var(--edge);
 }
 
