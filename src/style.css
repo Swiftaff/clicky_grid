@@ -43,7 +43,9 @@ body {
     background-color: var(--bgnd);
 }
 
-h1 {
+h1,
+div,
+h2 {
     font-family: sans-serif;
     color: var(--primary);
 }
@@ -53,6 +55,52 @@ img {
     border-radius: 4px;
     background-color: var(--edge);
     margin: 0 10px;
+}
+
+#winner {
+    display: none;
+    color: white;
+    border-radius: 4px;
+    background-color: var(--edge);
+    margin: 10px;
+    padding: 10px;
+    cursor: none;
+}
+
+#winner.p1 {
+    background-color: var(--p1);
+    display: inline-block;
+    cursor: pointer;
+}
+
+#winner.p2 {
+    background-color: var(--p2);
+    display: inline-block;
+    cursor: pointer;
+}
+
+#games {
+    color: var(--edge);
+}
+
+#games_p1 {
+    color: var(--p1);
+    font-weight: bold;
+    display: inline-block;
+    border-radius: 4px;
+    background-color: var(--edge);
+    margin: 0 10px;
+    padding: 10px;
+}
+
+#games_p2 {
+    color: var(--p2);
+    font-weight: bold;
+    display: inline-block;
+    border-radius: 4px;
+    background-color: var(--edge);
+    margin: 0 10px;
+    padding: 10px;
 }
 
 .grid-container {
