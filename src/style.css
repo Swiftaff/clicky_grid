@@ -1,0 +1,64 @@
+:root {
+    --primary: deeppink;
+    --bgnd: #333;
+    --edge: #ddd;
+    --black: black;
+}
+
+body {
+    text-align: center;
+    background-color: var(--bgnd);
+}
+
+h1 {
+    font-family: sans-serif;
+    color: var(--primary);
+}
+
+.grid-container {
+    margin: 0 auto;
+    position: relative;
+    margin: 20px auto;
+    border: 4px solid var(--edge);
+    height: var(--grid-height);
+}
+
+/* Grid squares */
+.grid-square {
+    position: absolute;
+    width: var(--square);
+    height: var(--square);
+    box-sizing: border-box;
+    border: 4px solid var(--edge);
+}
+
+/* edges */
+.edge {
+    position: absolute;
+    background: transparent;
+    cursor: pointer;
+}
+.h-edge {
+    height: 20px; /* clickable thickness */
+    margin-top: -8px;
+}
+.v-edge {
+    width: 20px; /* clickable thickness */
+    margin-left: -8px;
+}
+.h-edge:hover,
+.v-edge:hover {
+    background-color: var(--primary);
+    opacity: 0.5;
+}
+
+/* Vertices: small circles */
+.vertex {
+    position: absolute;
+    width: var(--circle);
+    height: var(--circle);
+    background: var(--black);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
