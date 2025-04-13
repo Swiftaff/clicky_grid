@@ -1,23 +1,62 @@
 const gridContainer = document.getElementById("grid");
-const squareSize = 50;
-const gridCount = 1;
-const circle = 10;
-const height = squareSize * gridCount;
-gridContainer.style.width = `${height}px`;
-
-// Set style variables
+const grid = document.getElementById("grid");
+const grid1 = document.getElementById("grid1");
+const grid2 = document.getElementById("grid2");
+const grid3 = document.getElementById("grid3");
+const grid5 = document.getElementById("grid5");
+const grid10 = document.getElementById("grid10");
+const grid_size = document.getElementById("grid_size");
+const winner_el = document.getElementById("winner");
+const box_count_p1 = document.getElementById(`box_count_p1`);
+const box_count_p2 = document.getElementById(`box_count_p2`);
+const play_button = document.getElementById(`play`);
 const styleEl = document.createElement("style");
-document.head.appendChild(styleEl);
-styleEl.textContent = `
+
+winner_el.addEventListener("click", play_again);
+play_button.addEventListener("click", start);
+
+const squareSize = 50;
+const circle = 10;
+let gridCount = 1;
+let height = 0;
+
+function clear_grid() {
+  set_dynamic_style_variables();
+  grid.innerHTML = "";
+  gridContainer.style.width = `${height}px`;
+}
+
+function set_dynamic_style_variables() {
+  height = squareSize * gridCount;
+  const styleEl = document.createElement("style");
+  document.head.appendChild(styleEl);
+  styleEl.textContent = `
 :root {
   --square: ${squareSize}px;
   --grid-height: ${height}px;
   --circle: ${circle}px;
 }`;
+}
 
-function clear_grid() {
-  const el = document.getElementById("grid");
-  if (el) el.innerHTML = "";
+function show_grid_size() {
+  grid_size.className = "show";
+  grid1.addEventListener("click", () => resize_grid(1));
+  grid2.addEventListener("click", () => resize_grid(2));
+  grid3.addEventListener("click", () => resize_grid(3));
+  grid5.addEventListener("click", () => resize_grid(5));
+  grid10.addEventListener("click", () => resize_grid(10));
+  draw_grid();
+}
+
+function resize_grid(size) {
+  grid1.className = "";
+  grid2.className = "";
+  grid3.className = "";
+  grid5.className = "";
+  grid10.className = "";
+  document.getElementById(`grid${size}`).className = "highlight";
+  gridCount = size;
+  draw_grid();
 }
 
 function draw_grid_squares() {
@@ -81,9 +120,6 @@ function draw_vertices() {
     }
   }
 }
-
-const winner_el = document.getElementById("winner");
-winner_el.addEventListener("click", play);
 
 function click_edge(e) {
   color_edge(e);
@@ -207,14 +243,25 @@ function init_edge_and_box_data() {
   }
 }
 
-function play() {
+function play_again() {
+  grid.classname = "";
   scores = { p1: 0, p2: 0 };
   player = 1;
   document.body.className = `p${player}`;
-  document.getElementById(`box_count_p1`).textContent = "0";
-  document.getElementById(`box_count_p2`).textContent = "0";
+  box_count_p1.textContent = "0";
+  box_count_p2.textContent = "0";
   winner_el.className = "";
   init_edge_and_box_data();
+  resize_grid(gridCount);
+  show_grid_size();
+}
+
+function start() {
+  grid.className = "grid-is-playable";
+  grid_size.className = "hide";
+}
+
+function draw_grid() {
   clear_grid();
   draw_grid_squares();
   draw_horizontal_edges();
@@ -229,4 +276,4 @@ let games = { p1: 0, p2: 0 };
 const edges = {};
 const boxes = {};
 
-play();
+play_again();

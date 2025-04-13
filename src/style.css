@@ -79,6 +79,35 @@ img {
     cursor: pointer;
 }
 
+#grid_size h2 {
+    color: white !important;
+}
+
+#grid_size div {
+    background-color: var(--edge);
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 4px;
+    margin: 0 10px 20px 10px;
+    font-weight: bold;
+    padding: 10px;
+    color: white;
+}
+
+#grid_size div.highlight {
+    background-color: var(--p1) !important;
+}
+
+#play {
+    display: block !important;
+    width: 200px;
+    margin: 0 auto 20px auto !important;
+    background-color: var(--p1) !important;
+    border: 8px solid var(--p2) !important;
+    font-weight: bold;
+    font-size: 30px;
+}
+
 #games {
     color: var(--edge);
 }
@@ -103,12 +132,22 @@ img {
     padding: 10px;
 }
 
-.grid-container {
-    margin: 0 auto;
-    position: relative;
+.hide {
+    display: none !important;
+}
+
+#grid {
+    pointer-events: none;
+    opacity: 0.3;
     margin: 20px auto;
-    border: 4px solid var(--edge);
+    position: relative;
     height: var(--grid-height);
+    border: 4px solid var(--edge);
+}
+
+.grid-is-playable {
+    pointer-events: all !important;
+    opacity: 1 !important;
 }
 
 /* Grid squares */
