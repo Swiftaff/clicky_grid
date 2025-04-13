@@ -17,6 +17,7 @@ for (let size = grid_min; size <= grid_max; size++) {
     size_row_2.appendChild(grid_buttons[`grid${size}`]);
   }
 }
+const restart_button = document.getElementById("restart");
 const grid_size = document.getElementById("grid_size");
 const winner_el = document.getElementById("winner");
 const score1 = document.getElementById(`score1`);
@@ -35,13 +36,18 @@ let scores = {};
 let games = { p1: 0, p2: 0 };
 let edges = {};
 let boxes = {};
+let restart_confirmed = false;
 winner_el.addEventListener("click", () => reset_game(gridCount));
 play_button.addEventListener("click", start);
+restart_button.addEventListener("click", restart);
 
 reset_game();
 
 function reset_game(size = gridCount) {
   //console.log("reset_game");
+  restart_confirmed = false;
+  restart_button.textContent = "Restart this game?";
+  restart_button.className = "hide";
   grid.className = "";
   score1.className = "hide";
   score2.className = "hide";
@@ -63,6 +69,7 @@ function start() {
   grid.className = "grid-is-playable";
   grid_size.className = "hide";
   play_button.className = "hide";
+  restart_button.className = "";
   score1.className = "";
   score2.className = "";
 }
@@ -298,4 +305,20 @@ function count_player_boxes() {
   return Object.values(boxes).reduce((count, value) => {
     return value === player ? count + 1 : count;
   }, 0);
+}
+
+function restart() {
+  if (restart_confirmed) {
+    reset_game();
+  } else {
+    restart_confirmed = true;
+    restart_button.textContent =
+      "The grid will reset - but your game count will remain... click again to confirm within 10 seconds!";
+    setTimeout(() => {
+      if (restart_confirmed) {
+        restart_button.textContent = "Restart this game?";
+        restart_confirmed = false;
+      }
+    }, 10000);
+  }
 }
