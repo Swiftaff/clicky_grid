@@ -19,6 +19,8 @@ for (let size = grid_min; size <= grid_max; size++) {
 }
 const grid_size = document.getElementById("grid_size");
 const winner_el = document.getElementById("winner");
+const score1 = document.getElementById(`score1`);
+const score2 = document.getElementById(`score2`);
 const box_count_p1 = document.getElementById(`box_count_p1`);
 const box_count_p2 = document.getElementById(`box_count_p2`);
 const play_button = document.getElementById(`play`);
@@ -41,6 +43,8 @@ reset_game();
 function reset_game(size = gridCount) {
   //console.log("reset_game");
   grid.className = "";
+  score1.className = "hide";
+  score2.className = "hide";
   scores = { p1: 0, p2: 0 };
   player = 1;
   document.body.className = `p${player}`;
@@ -59,6 +63,8 @@ function start() {
   grid.className = "grid-is-playable";
   grid_size.className = "hide";
   play_button.className = "hide";
+  score1.className = "";
+  score2.className = "";
 }
 
 function resize_grid(selected_size) {
