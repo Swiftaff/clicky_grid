@@ -83,7 +83,7 @@ img {
     color: white !important;
 }
 
-#grid_size div {
+#grid_size div div {
     background-color: var(--edge);
     display: inline-block;
     cursor: pointer;
@@ -94,18 +94,22 @@ img {
     color: white;
 }
 
-#grid_size div.highlight {
+#grid_size div div.highlight {
     background-color: var(--p1) !important;
 }
 
 #play {
-    display: block !important;
+    display: block;
     width: 200px;
-    margin: 0 auto 20px auto !important;
-    background-color: var(--p1) !important;
-    border: 8px solid var(--p2) !important;
+    margin: 0 auto 20px auto;
+    background-color: var(--p1);
+    border: 8px solid var(--p2);
     font-weight: bold;
     font-size: 30px;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
 #games {
@@ -139,7 +143,7 @@ img {
 #grid {
     pointer-events: none;
     opacity: 0.3;
-    margin: 20px auto;
+    margin: 60px auto;
     position: relative;
     height: var(--grid-height);
     border: 4px solid var(--edge);
