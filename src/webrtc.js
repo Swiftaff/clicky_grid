@@ -1,9 +1,10 @@
 // Function to send a message via a POST request
 async function sendMessage() {
+  console.log("sendMessage");
   const message = document.getElementById("messageInput").value;
   if (!message) return;
   try {
-    const response = await fetch("/api/message", {
+    const response = await fetch("/api/broadcast", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message }),
@@ -15,6 +16,7 @@ async function sendMessage() {
   }
 }
 
+/*
 // Function to poll for new messages using GET
 async function pollMessage() {
   console.log("check for new message");
@@ -29,8 +31,9 @@ async function pollMessage() {
     console.error("Error fetching message:", error);
   }
 }
+*/
 
 document.getElementById("sendButton").addEventListener("click", sendMessage);
 
 // Poll for messages every 2 seconds
-setInterval(pollMessage, 2000);
+//setInterval(pollMessage, 2000);

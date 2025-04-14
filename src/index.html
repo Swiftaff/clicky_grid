@@ -15,16 +15,6 @@
                 class="right"
             /><span id="box_count_p2">0</span></span>
         </h1>
-        <div id="grid_size">
-            <h2>Choose grid size</h2>
-            <div id="size_row_1"></div>
-            <div id="size_row_2"></div>
-        </div>
-        <div id="play">Play!</div>
-        <h2 id="winner"></h2>
-        <div id="grid"></div>
-        <div id="restart">Restart this game?</div>
-        <div id="games"><span id="games_p1">0</span></span> Games won <span id="games_p2">0</span></div>
 
         <!-- Input to send a message -->
         <input id="messageInput" type="text" placeholder="Enter your message">
@@ -36,8 +26,19 @@
         <p id="receivedMessage">None</p>
         </div>
 
+
+        <div id="grid_size">
+            <h2>Choose grid size</h2>
+            <div id="size_row_1"></div>
+            <div id="size_row_2"></div>
+        </div>
+        <div id="play">Play!</div>
+        <h2 id="winner"></h2>
+        <div id="grid"></div>
+        <div id="restart">Restart this game?</div>
+        <div id="games"><span id="games_p1">0</span></span> Games won <span id="games_p2">0</span></div>
         <div id="footer">Made with ❤️ by <a target="_blank" href="https://github.com/Swiftaff">Swiftaff</a></div>
         <script src="game.js" defer></script>
-        <script src="/api/broadcast.js" defer type="module"></script>
+        <script src="/webrtc.js" defer></script>
     </body>
 </html>
