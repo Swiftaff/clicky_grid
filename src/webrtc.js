@@ -17,6 +17,7 @@ async function sendMessage() {
 
 // Function to poll for new messages using GET
 async function pollMessage() {
+  console.log("check for new message");
   try {
     const response = await fetch("/api/message");
     const data = await response.json();
