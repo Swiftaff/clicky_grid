@@ -254,3 +254,7 @@ img {
 #footer {
     margin-top: 60px;
 }
+
+#messageInput {
+    margin: 20px;
+}
