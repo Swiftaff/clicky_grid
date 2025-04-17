@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "run": "sirv src --dev"
+    "run": "sirv src --dev",
+    "local": "vercel dev"
   },
   "author": "swiftaff@gmail.com",
   "license": "MIT",

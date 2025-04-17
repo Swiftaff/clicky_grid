@@ -9,6 +9,7 @@
         <script data-goatcounter="https://swiftaff.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     </head>
     <body class="p1">
+        <template component="testy">[testy content $item $num]</template>
         <h1>
             <span id="score1"><span id="box_count_p1">0</span><img src="left.svg" class="left" /></span>Clicky grid <span id="score2"><img
                 src="right.svg"
@@ -22,15 +23,19 @@
 
         <!-- Area to display the received message -->
         <div>
-        <h3>Received Message:</h3>
-        <p id="receivedMessage">None</p>
+            <h3>Received Message:</h3>
+            <p id="receivedMessage">None</p>
         </div>
 
 
         <div id="grid_size">
             <h2>Choose grid size</h2>
-            <div id="size_row_1"></div>
-            <div id="size_row_2"></div>
+            <div id="size_row_1">
+                <template component="testy2"><div>$item x $item</div></template>
+            </div>
+            <div id="size_row_2">
+                <template component="testy3"><div>$item x $item</div></template>
+            </div>
         </div>
         <div id="play">Play!</div>
         <h2 id="winner"></h2>
@@ -39,6 +44,6 @@
         <div id="games"><span id="games_p1">0</span></span> Games won <span id="games_p2">0</span></div>
         <div id="footer">Made with ❤️ by <a target="_blank" href="https://github.com/Swiftaff">Swiftaff</a></div>
         <script src="game.js" defer></script>
-        <script src="/webrtc.js" defer></script>
+        <script src="game2.js" defer></script>
     </body>
 </html>
