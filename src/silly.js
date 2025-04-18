@@ -104,11 +104,11 @@ function handle_for_loop(component_definition, component_name) {
   let for_array = component_definition.for_array;
   console.log("for_array", for_array);
 
-  let for_item = component_definition.for_item || "item";
-  console.log("for_item", for_item);
+  let item_key = component_definition.item_key || "item";
+  console.log("item_key", item_key);
 
-  let for_index = component_definition.for_index || "index";
-  console.log("for_index", for_index);
+  let item_index = component_definition.item_index || "index";
+  console.log("item_index", item_index);
 
   let template_el = app.templates[component_name];
   console.log("name", component_name);
@@ -116,13 +116,14 @@ function handle_for_loop(component_definition, component_name) {
 
   const fragment = document.createDocumentFragment();
 
-  for_array.forEach((item, idx) => {
+  for_array.forEach((item, index) => {
     //add conditional classes
     let content = template_el.content.cloneNode(true);
     if ("class_toggles" in component_definition) {
       let class_toggles = component_definition.class_toggles;
       class_toggles.forEach(([class_name, fn]) => {
-        if (fn(item, idx)) content.firstElementChild.classList.add(class_name);
+        if (fn(item, index))
+          content.firstElementChild.classList.add(class_name);
       });
     }
     content.firstElementChild.dataset.is_silly = true;
@@ -131,9 +132,10 @@ function handle_for_loop(component_definition, component_name) {
     //replace for loop variables
     const tmp = document.createElement("div");
     tmp.append(...fragment.childNodes);
-    tmp.innerHTML = tmp.innerHTML
-      .replaceAll("$" + for_item, item)
-      .replaceAll("$" + for_index, idx);
+
+    html_replace_placeholders_for_loop(tmp, item_key, item_index, index, item);
+    html_replace_placeholders_store(tmp);
+
     while (fragment.firstChild) fragment.removeChild(fragment.firstChild);
     fragment.append(...tmp.childNodes);
   });
@@ -148,7 +150,40 @@ function handle_default_template(component_definition, component_name) {
   let template_el = app.templates[component_name];
   console.log("name", component_name);
   console.log("template_el", template_el);
+
+  const fragment = document.createDocumentFragment();
+
   let content = template_el.content.cloneNode(true);
   content.firstElementChild.dataset.is_silly = true;
-  template_el.after(content);
+  fragment.appendChild(content);
+
+  //replace state variables
+  const tmp = document.createElement("div");
+  tmp.append(...fragment.childNodes);
+
+  html_replace_placeholders_store(tmp);
+
+  while (fragment.firstChild) fragment.removeChild(fragment.firstChild);
+  fragment.append(...tmp.childNodes);
+
+  template_el.after(fragment);
+}
+
+function html_replace_placeholders_for_loop(
+  tmp,
+  item_key,
+  item_index,
+  index,
+  item,
+) {
+  tmp.innerHTML = tmp.innerHTML
+    .replaceAll("$" + item_key, item)
+    .replaceAll("$" + item_index, index);
+}
+
+function html_replace_placeholders_store(tmp) {
+  Object.keys(app.store).forEach((k) => {
+    const v = app.store[k];
+    tmp.innerHTML = tmp.innerHTML.replaceAll("$" + k, v);
+  });
 }
