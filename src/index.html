@@ -16,24 +16,17 @@
             /><span id="box_count_p2">0</span></span>
         </h1>
 
-        <!-- Input to send a message -->
-        <input id="messageInput" type="text" placeholder="Enter your message">
-        <button id="sendButton">Send Message</button>
-
-        <!-- Area to display the received message -->
-        <div>
-            <h3>Received Message:</h3>
-            <p id="receivedMessage">None</p>
-        </div>
-
-
         <div id="grid_size">
             <h2>Choose grid size</h2>
             <div id="size_row_1">
-                <template component="size_buttons1"><div onclick="app.store.set('size',$item); reset_game($item);">$item x $item</div></template>
+                <template component for="[2,3,4]">
+                    <div class_toggles="[['highlight', (item, idx) => $size == item]]" onclick="app.store.set('size',$item); reset_game($item);">$item x $item</div>
+                </template>
             </div>
             <div id="size_row_2">
-                <template component="size_buttons2"><div onclick="app.store.set('size',$item); reset_game($item);">$item x $item</div></template>
+                <template component for="[5,6,7]">
+                    <div class_toggles="[['highlight', (item, idx) => $size == item]]" onclick="app.store.set('size',$item); reset_game($item);">$item x $item</div>
+                </template>
             </div>
         </div>
         <div id="play">Play!</div>

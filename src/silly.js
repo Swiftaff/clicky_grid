@@ -1,7 +1,8 @@
 const app = {
   init,
   reset_dom,
-  templates: [],
+  templates: {},
+  templates_new: [],
 };
 
 function init(obj, store = {}) {
@@ -39,6 +40,17 @@ function render_silly_templates_into_dom() {
   console.log();
   console.log("====");
   console.log("render templates");
+
+  //new way using just templates
+  Object.values(app.templates_new).forEach((t, i) => {
+    console.log();
+    console.log(i, "###", "name", t);
+    if ("for" in t.attributes) {
+      handle_for_loop_new(t);
+    }
+  });
+
+  //old way - using js object
   Object.keys(app.components).map((component_name, i) => {
     console.log();
     console.log(i, ".", "name", component_name);
@@ -80,6 +92,45 @@ function collect_nested_templates(fragment) {
   return nested_templates;
 }
 
+function handle_for_loop_new(t) {
+  console.log(t);
+  let for_array = eval(t.attributes["for"].value);
+  console.log("for_array", for_array);
+
+  let item_key = "item";
+  //  ("for_item" in t.attributes && t.attributes["for_item"].value) || "item";
+  console.log("item_key", item_key);
+
+  let item_index = "index";
+  //  ("for_index" in t.attributes && t.attributes["for_index"].value) || "index";
+  console.log("item_index", item_index);
+
+  const fragment = document.createDocumentFragment();
+
+  for_array.forEach((item, index) => {
+    let content = t.content.cloneNode(true);
+    content.firstElementChild.dataset.is_silly = true;
+
+    replace_placeholders(content, (tmp) => {
+      //these act on the contents of the temp div (containing any childNodes)
+      html_replace_placeholders_for_loop(
+        item_key,
+        item_index,
+        index,
+        item,
+        tmp,
+      );
+      html_replace_placeholders_store(tmp);
+      //this acts on each of the childNodes
+      get_el_with_conditional_classes_for_loop_new(tmp, item, index);
+    });
+
+    fragment.appendChild(content);
+  });
+
+  t.after(fragment);
+}
+
 function handle_for_loop(component_definition, component_name) {
   console.log();
   console.log("====");
@@ -93,7 +144,7 @@ function handle_for_loop(component_definition, component_name) {
   let item_index = component_definition.item_index || "index";
   console.log("item_index", item_index);
 
-  let template_el = app.templates[component_name];
+  let template_el = app.templates[component_name].el;
   console.log("name", component_name);
   console.log("template_el", template_el, template_el.innerHTML);
 
@@ -128,8 +179,26 @@ function replace_placeholders(fragment, fn) {
   const tmp = document.createElement("div");
   tmp.append(...fragment.childNodes);
   fn(tmp);
-  while (fragment.firstChild) fragment.removeChild(fragment.firstChild);
+  while (fragment.firstChild) {
+    fragment.removeChild(fragment.firstChild);
+  }
   fragment.append(...tmp.childNodes);
+}
+
+function get_el_with_conditional_classes_for_loop_new(tmp, item, index) {
+  //console.log("#####get_el_with_conditional_classes_for_loop_new", tmp);
+  tmp.childNodes.forEach((c) => {
+    console.log("!!!!", c);
+
+    if (c.nodeType !== 3 && "class_toggles" in c.attributes) {
+      let class_toggles = eval(c.attributes["class_toggles"].value);
+      //console.log(class_toggles);
+      class_toggles.forEach(([class_name, fn]) => {
+        console.log(class_name, fn, item, index, fn(item, index));
+        if (fn(item, index)) c.classList.add(class_name);
+      });
+    }
+  });
 }
 
 function get_el_with_conditional_classes_for_loop(
@@ -153,7 +222,7 @@ function handle_default_template(component_definition, component_name) {
   console.log();
   console.log("====");
   console.log("b. handle default template");
-  let template_el = app.templates[component_name];
+  let template_el = app.templates[component_name].el;
   console.log("name", component_name);
   console.log("template_el", template_el);
 
@@ -190,21 +259,19 @@ function html_replace_placeholders_store(tmp) {
 function find_silly_templates() {
   //find templates in the dom
   const { templates, nested_templates } = collect_root_templates();
-  app.templates = Array.from([...nested_templates, ...templates]).reduce(
-    (map, tpl) => {
-      const name = tpl.getAttribute("component");
-      if (name) map[name] = tpl;
-      return map;
-    },
-    {},
-  );
-  console.log("templates", app.templates);
+  app.templates_new = [...nested_templates, ...templates];
+  app.templates = Array.from(app.templates_new).reduce((map, el) => {
+    const name = el.getAttribute("component");
+    if (name) map[name] = { el };
+    return map;
+  }, {});
+  console.log("templates", app.templates, app.templates_new);
 }
 
 function remove_previous_silly_elements() {
   const silly_els = document.querySelectorAll("[data-is_silly]");
   let silly_templates = Object.values(app.templates).flatMap((tpl) =>
-    Array.from(tpl.content.querySelectorAll("[data-is_silly]")),
+    Array.from(tpl.el.content.querySelectorAll("[data-is_silly]")),
   );
   silly_templates = [...silly_templates, ...silly_els];
   console.log("silly templates", silly_templates);
