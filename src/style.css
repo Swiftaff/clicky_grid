@@ -157,7 +157,8 @@ img {
     display: none !important;
 }
 
-#grid {
+#grid,
+#grid2 {
     pointer-events: none;
     opacity: 0.3;
     margin: 0 auto 10px auto;

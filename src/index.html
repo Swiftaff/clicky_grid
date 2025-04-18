@@ -30,14 +30,21 @@
         <div id="grid_size">
             <h2>Choose grid size</h2>
             <div id="size_row_1">
-                <template component="testy2"><div onclick="app.store.set('size',$item); reset_game($item);">$item x $item</div></template>
+                <template component="size_buttons1"><div onclick="app.store.set('size',$item); reset_game($item);">$item x $item</div></template>
             </div>
             <div id="size_row_2">
-                <template component="testy3"><div onclick="app.store.set('size',$item); reset_game($item);">$item x $item</div></template>
+                <template component="size_buttons2"><div onclick="app.store.set('size',$item); reset_game($item);">$item x $item</div></template>
             </div>
         </div>
         <div id="play">Play!</div>
         <h2 id="winner"></h2>
+        <template component="outer_grid">
+            <div id="grid2">
+                <template component="grid_new">
+                    <div class="abc grid-square" id="b-row-0-col-$index" style="top: 0px; left: calc(50px * $index);"></div>
+                </template>
+            </div>
+        </template>
         <div id="grid"></div>
         <div id="restart">Restart this game?</div>
         <div id="games"><span id="games_p1">0</span></span> Games won <span id="games_p2">0</span></div>
