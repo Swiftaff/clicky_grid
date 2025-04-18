@@ -1,22 +1,9 @@
 const gridContainer = document.getElementById("grid");
 const grid = document.getElementById("grid");
-const grid_buttons = {};
 const size_row_1 = document.getElementById("size_row_1");
 const size_row_2 = document.getElementById("size_row_2");
 let grid_min = 2;
 let grid_max = 7;
-for (let size = grid_min; size <= grid_max; size++) {
-  const btn = document.createElement("style");
-  grid_buttons[`grid${size}`] = document.createElement("div");
-  grid_buttons[`grid${size}`].id = `grid${size}`;
-  grid_buttons[`grid${size}`].textContent = `${size} x ${size}`;
-  grid_buttons[`grid${size}`].addEventListener("click", () => reset_game(size));
-  if (size <= grid_min + (grid_max - grid_min) / 2) {
-    size_row_1.appendChild(grid_buttons[`grid${size}`]);
-  } else {
-    size_row_2.appendChild(grid_buttons[`grid${size}`]);
-  }
-}
 const restart_button = document.getElementById("restart");
 const grid_size = document.getElementById("grid_size");
 const winner_el = document.getElementById("winner");
@@ -77,10 +64,6 @@ function start() {
 function resize_grid(selected_size) {
   //console.log("resize_grid");
   gridCount = selected_size;
-  for (let size = grid_min; size <= grid_max; size++) {
-    grid_buttons[`grid${size}`].className = "";
-  }
-  grid_buttons[`grid${selected_size}`].className = "highlight";
 }
 
 function init_edge_and_box_data() {
