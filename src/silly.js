@@ -29,29 +29,12 @@ function reset_dom() {
   console.log("====");
   console.log("reset_dom");
 
-  //find and delete previously added dom elements
-  console.log(app.templates);
-  const silly_els = document.querySelectorAll("[data-is_silly]");
-  let silly_templates = Object.values(app.templates).flatMap((tpl) =>
-    Array.from(tpl.content.querySelectorAll("[data-is_silly]")),
-  );
-  silly_templates = [...silly_templates, ...silly_els];
-  console.log("silly templates", silly_templates);
-  silly_templates.forEach((t) => t.remove());
+  remove_previous_silly_elements();
+  find_silly_templates();
+  render_silly_templates_into_dom();
+}
 
-  //find templates in the dom
-  const { templates, nested_templates } = collect_templates();
-  console.log("templates", templates, nested_templates);
-  app.templates = Array.from([...nested_templates, ...templates]).reduce(
-    (map, tpl) => {
-      const name = tpl.getAttribute("component");
-      if (name) map[name] = tpl;
-      return map;
-    },
-    {},
-  );
-  console.log(app.templates);
-
+function render_silly_templates_into_dom() {
   //render each template into the dom
   console.log();
   console.log("====");
@@ -71,7 +54,7 @@ function reset_dom() {
   });
 }
 
-function collect_templates() {
+function collect_root_templates() {
   const templates = Array.from(document.querySelectorAll("template"));
   let nested_templates = [];
   templates.forEach(
@@ -117,30 +100,53 @@ function handle_for_loop(component_definition, component_name) {
   const fragment = document.createDocumentFragment();
 
   for_array.forEach((item, index) => {
-    //add conditional classes
-    let content = template_el.content.cloneNode(true);
-    if ("class_toggles" in component_definition) {
-      let class_toggles = component_definition.class_toggles;
-      class_toggles.forEach(([class_name, fn]) => {
-        if (fn(item, index))
-          content.firstElementChild.classList.add(class_name);
-      });
-    }
-    content.firstElementChild.dataset.is_silly = true;
+    const content = get_el_with_conditional_classes_for_loop(
+      template_el,
+      component_definition,
+      item,
+      index,
+    );
     fragment.appendChild(content);
 
-    //replace for loop variables
-    const tmp = document.createElement("div");
-    tmp.append(...fragment.childNodes);
-
-    html_replace_placeholders_for_loop(tmp, item_key, item_index, index, item);
-    html_replace_placeholders_store(tmp);
-
-    while (fragment.firstChild) fragment.removeChild(fragment.firstChild);
-    fragment.append(...tmp.childNodes);
+    replace_placeholders(fragment, (tmp) => {
+      html_replace_placeholders_for_loop(
+        item_key,
+        item_index,
+        index,
+        item,
+        tmp,
+      );
+      html_replace_placeholders_store(tmp);
+    });
   });
 
   template_el.after(fragment);
+}
+
+function replace_placeholders(fragment, fn) {
+  //run a function on the fragment in a temp div, to search/replace for html placeholders like $index
+  const tmp = document.createElement("div");
+  tmp.append(...fragment.childNodes);
+  fn(tmp);
+  while (fragment.firstChild) fragment.removeChild(fragment.firstChild);
+  fragment.append(...tmp.childNodes);
+}
+
+function get_el_with_conditional_classes_for_loop(
+  template_el,
+  component_definition,
+  item,
+  index,
+) {
+  let content = template_el.content.cloneNode(true);
+  if ("class_toggles" in component_definition) {
+    let class_toggles = component_definition.class_toggles;
+    class_toggles.forEach(([class_name, fn]) => {
+      if (fn(item, index)) content.firstElementChild.classList.add(class_name);
+    });
+  }
+  content.firstElementChild.dataset.is_silly = true;
+  return content;
 }
 
 function handle_default_template(component_definition, component_name) {
@@ -157,24 +163,17 @@ function handle_default_template(component_definition, component_name) {
   content.firstElementChild.dataset.is_silly = true;
   fragment.appendChild(content);
 
-  //replace state variables
-  const tmp = document.createElement("div");
-  tmp.append(...fragment.childNodes);
-
-  html_replace_placeholders_store(tmp);
-
-  while (fragment.firstChild) fragment.removeChild(fragment.firstChild);
-  fragment.append(...tmp.childNodes);
+  replace_placeholders(fragment, html_replace_placeholders_store);
 
   template_el.after(fragment);
 }
 
 function html_replace_placeholders_for_loop(
-  tmp,
   item_key,
   item_index,
   index,
   item,
+  tmp,
 ) {
   tmp.innerHTML = tmp.innerHTML
     .replaceAll("$" + item_key, item)
@@ -186,4 +185,28 @@ function html_replace_placeholders_store(tmp) {
     const v = app.store[k];
     tmp.innerHTML = tmp.innerHTML.replaceAll("$" + k, v);
   });
+}
+
+function find_silly_templates() {
+  //find templates in the dom
+  const { templates, nested_templates } = collect_root_templates();
+  app.templates = Array.from([...nested_templates, ...templates]).reduce(
+    (map, tpl) => {
+      const name = tpl.getAttribute("component");
+      if (name) map[name] = tpl;
+      return map;
+    },
+    {},
+  );
+  console.log("templates", app.templates);
+}
+
+function remove_previous_silly_elements() {
+  const silly_els = document.querySelectorAll("[data-is_silly]");
+  let silly_templates = Object.values(app.templates).flatMap((tpl) =>
+    Array.from(tpl.content.querySelectorAll("[data-is_silly]")),
+  );
+  silly_templates = [...silly_templates, ...silly_els];
+  console.log("silly templates", silly_templates);
+  silly_templates.forEach((t) => t.remove());
 }
