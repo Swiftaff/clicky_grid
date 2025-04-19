@@ -38,18 +38,12 @@ function render_silly_templates_into_dom() {
   //from bottom to top, so they are properly nested into parent templates
   //console.log("- - render templates");
   Object.values(app.templates).forEach((t, i) => {
-    //if ("if" in t.t.attributes) {
-    //  if (handle_template__if(t)) {
-    if ("for" in t.t.attributes) handle_template__for_loop(t);
-    else handle_template__default(t);
-    //  }
-    //}
-  });
-  Object.values(app.templates).forEach((t, i) => {
-    if ("if" in t.t.attributes) {
-      if (handle_template__if(t)) {
-        while (t.t.firstSibling) t.t.parentNode().removeChild(t.t.firstSibling);
-      }
+    //console.log(t);
+    let is_if = "if" in t.t.attributes;
+    let is_for = "for" in t.t.attributes;
+    if (!is_if || (is_if && handle_template__if(t))) {
+      if (is_for) handle_template__for_loop(t);
+      else handle_template__default(t);
     }
   });
 }
@@ -116,17 +110,19 @@ function collect_nested_templates(fragment, parent_id = "0") {
 }
 
 function handle_template__if(t) {
-  console.log("- - - handle_template__if", t.t.attributes["if"].value);
-  let replaced = html_replace_placeholders_store(t.t.attributes["if"].value);
+  console.log("- - - handle_template__if", t.t.attributes.if.value);
+  let replaced = html_replace_placeholders_store(t.t.attributes.if.value);
   replaced = html_replace_placeholders_hoisted(replaced, t.id);
   console.log(replaced);
-  return eval(replaced);
+  let e = eval(replaced);
+  console.log(e);
+  return e;
 }
 
 function handle_template__for_loop(t) {
-  //console.log("- - - handle_template__for_loop", t.t.attributes["for"].value);
+  //console.log("- - - handle_template__for_loop", t.t.attributes.for.value);
   let for_array = eval(
-    html_replace_placeholders_store(t.t.attributes["for"].value),
+    html_replace_placeholders_store(t.t.attributes.for.value),
   );
   if (typeof for_array === "number") for_array = [...Array(for_array).keys()];
   //console.log("####", for_array);
@@ -135,9 +131,9 @@ function handle_template__for_loop(t) {
   const fragment = document.createDocumentFragment();
   for_array.forEach((item, index) => {
     let content = t.t.content.cloneNode(true);
-    console.log(content);
+    //console.log(content);
     content.firstElementChild.dataset.is_silly = true;
-    console.log(content.firstElementChild);
+    //console.log(content.firstElementChild);
     replace_placeholders(content, (tmp) => {
       //these act on the contents of the temp div (containing any childNodes)
       //and set app.hoisted variables for use below
@@ -155,7 +151,7 @@ function handle_template__for_loop(t) {
         get_el_with_conditional_classes_for_loop_new(tmp, item, index);
       //t.t.content = content;
     });
-    console.log(content.firstElementChild);
+    //console.log(content.firstElementChild);
     fragment.appendChild(content);
   });
   remove_child_templates_and_silly_items(fragment, t.id);
@@ -163,7 +159,7 @@ function handle_template__for_loop(t) {
 }
 
 function handle_template__default(t) {
-  console.log("- - - handle_template__default", t.id);
+  //console.log("- - - handle_template__default", t.id);
   const fragment = document.createDocumentFragment();
   let content = t.t.content.cloneNode(true);
   content.firstElementChild.dataset.is_silly = true;
@@ -191,7 +187,7 @@ function replace_placeholders(fragment, fn) {
 function get_el_with_conditional_classes_for_loop_new(tmp, item, index) {
   tmp.childNodes.forEach((c) => {
     if (c.nodeType !== 3 && "class_toggles" in c.attributes) {
-      let class_toggles = eval(c.attributes["class_toggles"].value);
+      let class_toggles = eval(c.attributes.class_toggles.value);
       class_toggles.forEach(([class_name, fn]) => {
         if (fn(item, index)) c.classList.add(class_name);
       });
@@ -214,11 +210,11 @@ function html_replace_placeholders_for_loop(
   let h_item_index = `${item_index}[${id}]`;
   app.hoisted[h_item_key] = item;
   app.hoisted[h_item_index] = index;
-  console.log(h_item_key, h_item_index, app.hoisted);
+  //console.log(h_item_key, h_item_index, app.hoisted);
 }
 
 function html_replace_placeholders_store(tmp) {
-  console.log(Object.keys(app.store), tmp);
+  //console.log(Object.keys(app.store), tmp);
   Object.keys(app.store).forEach((k) => {
     const v = app.store[k];
     //return value for replacing simple values in attributes
@@ -230,13 +226,13 @@ function html_replace_placeholders_store(tmp) {
 }
 
 function html_replace_placeholders_hoisted(tmp, id) {
-  console.log("html_replace_placeholders_hoisted", app.hoisted, tmp, id);
+  //console.log("html_replace_placeholders_hoisted", app.hoisted, tmp, id);
   Object.keys(app.hoisted)
     .filter((name_id) => has_this_or_parent_id(name_id, id))
     .forEach((name_id) => {
       let k = get_name_from_name_id(name_id);
       let v = app.hoisted[name_id];
-      console.log(k, v);
+      //console.log(k, v);
       //return value for replacing simple values in attributes
       if (typeof tmp === "string") tmp = tmp.replaceAll("$" + k, v);
       //else replace any occurrence across the html contents of a parent div
@@ -249,7 +245,7 @@ function has_this_or_parent_id(name_id, id) {
   id = "" + id;
   let hoisted_id = get_id_from_name_id(name_id);
   let bool = id.startsWith(hoisted_id);
-  console.log(name_id, id, bool);
+  //console.log(name_id, id, bool);
   // e.g. true: id="0.3.2", name_id="0.3.2" // yes if same scope level
   // e.g. true: id="0.3.2", name_id="0.3" //yes if ancestor scope level
   // e.g. false: id="0.3.2", name_id="0.3.1" // no if siblings
@@ -283,7 +279,7 @@ function find_silly_templates() {
   //console.log("- - find silly templates");
   const { templates, nested_templates } = collect_root_templates();
   app.templates = [...nested_templates, ...templates];
-  console.log("    ", app.templates);
+  //console.log("    ", app.templates);
 }
 
 function remove_previous_silly_elements(el) {
