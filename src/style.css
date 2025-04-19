@@ -199,7 +199,7 @@ img {
 /* edges */
 .edge {
     position: absolute;
-    background: transparent;
+    background: red;
     cursor: pointer;
 }
 .h-edge {

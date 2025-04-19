@@ -20,12 +20,12 @@
             <h2>Choose grid size</h2>
             <div id="size_row_1">
                 <template component for="[2,3,4]">
-                    <div class_toggles="[['highlight', (item, idx) => $size == item]]" onclick="app.store.set('size',$item); reset_game($item);">$item x $item</div>
+                    <div class_toggles="[['highlight', (item, idx) => $size == item]]" onclick="app.store_set('size',$item); reset_game($item);">$item x $item</div>
                 </template>
             </div>
             <div id="size_row_2">
                 <template component for="[5,6,7]">
-                    <div class_toggles="[['highlight', (item, idx) => $size == item]]" onclick="app.store.set('size',$item); reset_game($item);">$item x $item</div>
+                    <div class_toggles="[['highlight', (item, idx) => $size == item]]" onclick="app.store_set('size',$item); reset_game($item);">$item x $item</div>
                 </template>
             </div>
         </div>
@@ -33,9 +33,13 @@
         <h2 id="winner"></h2>
         <template component>
             <div id="grid2" style="width: calc($size * 50px);">
-                <template component for="$size">
-                    <template component for="$size" for_index="col">
-                        <div class="grid-square" id="b-row-$index-col-$col" style="top: calc(50px * $index); left: calc(50px * $col);"></div>
+                <template component for="$size+1" for_index="row">
+                    <template component for="$size+1" for_index="col">
+                        <template component if="$col < $size && $row < $size">
+                            <div class="grid-square" id="b-row-$row-col-$col" style="top: calc(50px * $row); left: calc(50px * $col);"></div>
+                        </template>
+                        <div class="edge h-edge" id="h-row-$row-col-$col" style="top: calc(50px * $row - 2px); left: calc(50px * $col); width: 50px;"></div>
+                        <div class="edge v-edge" id="v-row-$row-col-$col" style="left: calc(50px * $row - 2px); top: calc(50px * $col); height: 50px;"></div>
                     </template>
                 </template>
             </div>
