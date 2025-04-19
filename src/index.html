@@ -34,7 +34,9 @@
         <template component>
             <div id="grid2" style="width: calc($size * 50px);">
                 <template component for="$size">
-                    <div class="abc grid-square" id="b-row-0-col-$index" style="top: 0px; left: calc(50px * $index);"></div>
+                    <template component for="$size" for_index="col">
+                        <div class="grid-square" id="b-row-$index-col-$col" style="top: calc(50px * $index); left: calc(50px * $col);"></div>
+                    </template>
                 </template>
             </div>
         </template>
