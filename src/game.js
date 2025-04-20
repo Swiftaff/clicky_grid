@@ -2,8 +2,8 @@ document.addEventListener("alpine:init", () => {
   Alpine.data("state", () => ({
     //constants
     cell_size: 50,
-    size_row_1: [1, 2, 3, 4],
-    size_row_2: [5, 6, 7, 8],
+    size_row_1: [2, 3, 4],
+    size_row_2: [5, 6, 7],
     //updateable but remain across games
     size: 2,
     games: { p1: 0, p2: 0 },
