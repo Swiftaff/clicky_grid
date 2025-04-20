@@ -143,31 +143,33 @@ img {
 
 #games_p1 {
     color: var(--p1);
+    border: var(--p1) 2px solid;
     font-weight: bold;
     display: inline-block;
     border-radius: 4px;
-    background-color: var(--edge);
     margin: 0 10px;
     padding: 10px;
 }
 
 #games_p2 {
     color: var(--p2);
+    border: var(--p2) 2px solid;
     font-weight: bold;
     display: inline-block;
     border-radius: 4px;
-    background-color: var(--edge);
     margin: 0 10px;
     padding: 10px;
 }
 
-.hide,
-.score {
+.hide {
     display: none !important;
 }
 
-#grid,
-#grid2 {
+.score {
+    display: none;
+}
+
+#grid {
     pointer-events: none;
     opacity: 0.3;
     margin: 0 auto 10px auto;
@@ -180,6 +182,7 @@ img {
     margin: 20px;
     color: var(--edge);
     cursor: pointer;
+    display: none;
 }
 
 .grid-is-playable {
@@ -196,10 +199,12 @@ img {
 
 .grid-square.p1 {
     background-color: var(--p1);
+    animation: fadeGreytoP1 0.5s forwards;
 }
 
 .grid-square.p2 {
     background-color: var(--p2);
+    animation: fadeGreytoP2 0.5s forwards;
 }
 
 /* edges */
@@ -224,15 +229,15 @@ img {
 
 /* edges selected */
 .edge.p1 {
-    background-color: var(--p1);
     opacity: 1;
     pointer-events: none !important;
+    animation: fadeP1toBlack 1s forwards;
 }
 
 .edge.p2 {
-    background-color: var(--p2);
     opacity: 1;
     pointer-events: none !important;
+    animation: fadeP2toBlack 1s forwards;
 }
 
 .h-edge.p1,
@@ -265,4 +270,40 @@ img {
 
 #messageInput {
     margin: 20px;
+}
+
+@keyframes fadeP1toBlack {
+    0% {
+        background-color: var(--p1);
+    }
+    100% {
+        background-color: var(--black);
+    }
+}
+
+@keyframes fadeP2toBlack {
+    0% {
+        background-color: var(--p2);
+    }
+    100% {
+        background-color: var(--black);
+    }
+}
+
+@keyframes fadeGreytoP2 {
+    0% {
+        background-color: var(--edge);
+    }
+    100% {
+        background-color: var(--p1);
+    }
+}
+
+@keyframes fadeGreytoP2 {
+    0% {
+        background-color: var(--edge);
+    }
+    100% {
+        background-color: var(--p2);
+    }
 }
