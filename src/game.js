@@ -1,9 +1,5 @@
 const gridContainer = document.getElementById("grid");
 const grid = document.getElementById("grid");
-const size_row_1 = document.getElementById("size_row_1");
-const size_row_2 = document.getElementById("size_row_2");
-let grid_min = 2;
-let grid_max = 7;
 const restart_button = document.getElementById("restart");
 const grid_size = document.getElementById("grid_size");
 const winner_el = document.getElementById("winner");
@@ -117,21 +113,10 @@ function clear_grid() {
   gridContainer.style.width = `${height}px`;
 }
 
-function draw_grid_squares() {
-  //console.log("draw_grid_squares");
-  for (let row = 0; row < gridCount; row++) {
-    for (let col = 0; col < gridCount; col++) {
-      const el = document.createElement("div");
-      el.className = "grid-square";
-      el.id = get_id("b", row, col);
-      el.style.top = row * squareSize + "px";
-      el.style.left = col * squareSize + "px";
-      gridContainer.appendChild(el);
-    }
-  }
-}
+function draw_grid_squares() {}
 
 function draw_horizontal_edges() {
+  /*
   //console.log("draw_hor_edges");
   // There are gridCount+1 horizontal edge lines, each having gridCount segments.
   for (let row = 0; row <= gridCount; row++) {
@@ -148,9 +133,11 @@ function draw_horizontal_edges() {
       gridContainer.appendChild(el);
     }
   }
+  */
 }
 
 function draw_vertical_edges() {
+  /*
   //console.log("draw_vert_edges");
   // There are gridCount+1 vertical edge lines, each having gridCount segments.
   for (let col = 0; col <= gridCount; col++) {
@@ -167,21 +154,10 @@ function draw_vertical_edges() {
       gridContainer.appendChild(el);
     }
   }
+  */
 }
 
-function draw_vertices() {
-  //console.log("draw_vertices");
-  // There are (gridCount+1) x (gridCount+1) vertices.
-  for (let row = 0; row <= gridCount; row++) {
-    for (let col = 0; col <= gridCount; col++) {
-      const el = document.createElement("div");
-      el.className = "vertex";
-      el.style.top = row * squareSize + "px";
-      el.style.left = col * squareSize + "px";
-      gridContainer.appendChild(el);
-    }
-  }
-}
+function draw_vertices() {}
 
 function click_edge(e) {
   //console.log("click_edge");

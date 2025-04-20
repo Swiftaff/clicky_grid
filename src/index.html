@@ -6,9 +6,10 @@
         <title>Clicky grid</title>
         <link rel="icon" type="image/svg+xml" href="favicon.svg" />
         <link rel="stylesheet" href="style.css" />
+        <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script data-goatcounter="https://swiftaff.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     </head>
-    <body class="p1">
+    <body class="p1" x-data="state">
         <h1>
             <span id="score1"><span id="box_count_p1">0</span><img src="left.svg" class="left" /></span>Clicky grid <span id="score2"><img
                 src="right.svg"
@@ -19,37 +20,62 @@
         <div id="grid_size">
             <h2>Choose grid size</h2>
             <div id="size_row_1">
-                <template component for="[2,3,4]">
-                    <div class_toggles="[['highlight', (item, idx) => $size == item]]" onclick="app.store_set('size',$item); reset_game($item);">$item x $item</div>
+                <template x-for="item in size_row_1">
+                    <div @click="size_update(item)" x-text="item + ' x ' + item" :class="size === item && 'highlight'"></div>
                 </template>
             </div>
             <div id="size_row_2">
-                <template component for="[5,6,7]">
-                    <div class_toggles="[['highlight', (item, idx) => $size == item]]" onclick="app.store_set('size',$item); reset_game($item);">$item x $item</div>
+                <template x-for="item in size_row_2">
+                    <div @click="size_update(item)" x-text="item + ' x ' + item" :class="size === item && 'highlight'"></div>
                 </template>
             </div>
         </div>
         <div id="play">Play!</div>
         <h2 id="winner"></h2>
-        <template component>
-            <div id="grid2" style="width: calc($size * 50px);">
-                <template component for="$size+1" for_index="row">
-                    <template component for="$size+1" for_index="col">
-                        <template component if="$col < $size && $row < $size">
-                            <div class="grid-square" id="b-row-$row-col-$col" style="top: calc(50px * $row); left: calc(50px * $col);"></div>
+        <div id="grid2" x-bind:style="style_grid2">
+            <template x-for="col in columns">
+                <template x-for="row in columns">
+                    <div>
+                        <template x-if="col < size && row < size">
+                            <div class="grid-square" x-bind:id="'b-row-'+row+'-col-'+col" x-bind:style="'top:'+row*cell_size+'px;left:'+col*cell_size+'px;'"></div>
                         </template>
-                        <div class="edge h-edge" id="h-row-$row-col-$col" style="top: calc(50px * $row - 2px); left: calc(50px * $col); width: 50px;"></div>
-                        <div class="edge v-edge" id="v-row-$row-col-$col" style="left: calc(50px * $row - 2px); top: calc(50px * $col); height: 50px;"></div>
-                    </template>
+                        <template x-if="col < size">
+                            <div @click="click_edge2" class="edge h-edge" x-bind:id="'h-row-'+row+'-col-'+col" x-bind:style="'top:'+row*cell_size+'px;left:'+col*cell_size+'px;  width:'+cell_size+'px;'"></div>
+                        </template>
+                        <template x-if="col < size">
+                            <div @click="click_edge2" class="edge v-edge" x-bind:id="'v-row-'+row+'-col-'+col" x-bind:style="'top:'+col*cell_size+'px;left:'+(row*cell_size-2)+'px;height:'+cell_size+'px;'"></div>
+                        </template>
+                        <div class="vertex" x-bind:style="'top:'+row*cell_size+'px;left:'+col*cell_size+'px;'"></div>
+                    </div>
                 </template>
-            </div>
-        </template>
+            </template>
+        </div>
         <div id="grid"></div>
         <div id="restart">Restart this game?</div>
         <div id="games"><span id="games_p1">0</span></span> Games won <span id="games_p2">0</span></div>
         <div id="footer">Made with ❤️ by <a target="_blank" href="https://github.com/Swiftaff">Swiftaff</a></div>
         <script src="game.js" defer></script>
-        <script src="silly.js" defer></script>
-        <script src="game2.js" defer></script>
+        <script>
+            document.addEventListener('alpine:init', () => {
+                Alpine.data('state', () => ({
+                    size: 2,
+                    cell_size: 50,
+                    size_row_1: [1, 2, 3, 4],
+                    size_row_2: [5, 6, 7, 8],
+                    size_update(val) {
+                        this.size = val;
+                    },
+                    click_edge2(e){
+                      console.log("click edge",e);
+                    },
+                    get columns() {
+                        return Array.from({ length: this.size + 1 }, (_, index) => index);
+                    },
+                    get style_grid2() {
+                        return 'width: ' + this.size * this.cell_size + 'px';
+                    }
+                }));
+            });
+        </script>
     </body>
 </html>

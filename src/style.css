@@ -199,7 +199,6 @@ img {
 /* edges */
 .edge {
     position: absolute;
-    background: red;
     cursor: pointer;
 }
 .h-edge {
@@ -250,6 +249,7 @@ img {
     border-radius: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
+    z-index: 100;
 }
 
 #footer {
