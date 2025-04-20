@@ -9,7 +9,7 @@
         <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
         <script data-goatcounter="https://swiftaff.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
     </head>
-    <body class="p1" x-data="state">
+    <body :class="'p'+player" x-data="state">
         <h1>
             <span id="score1"><span id="box_count_p1">0</span><img src="left.svg" class="left" /></span>Clicky grid <span id="score2"><img
                 src="right.svg"
@@ -31,20 +31,20 @@
         </div>
         <div @click="start" id="play" :class="is_playing && 'hide'">Play!</div>
         <h2 id="winner"></h2>
-        <div id="grid2" x-bind:style="style_grid2" :class="is_playing && 'grid-is-playable'">
+        <div id="grid" x-bind:style="style_grid" :class="is_playing && 'grid-is-playable'">
             <template x-for="col in columns">
                 <template x-for="row in columns">
                     <div>
                         <template x-if="col < size && row < size">
-                            <div class="grid-square" x-bind:id="'b-row-'+row+'-col-'+col" x-bind:style="'top:'+row*cell_size+'px;left:'+col*cell_size+'px;'"></div>
+                            <div class="grid-square" :class="class_box_color('b',row,col)" x-bind:id="get_id('b',row,col)" x-bind:style="style_square(row,col)"></div>
                         </template>
                         <template x-if="col < size">
-                            <div @click="click_edge2" class="edge h-edge" :class="(edges['h-row-'+row+'-col-'+col]===1 && 'p1') || (edges['h-row-'+row+'-col-'+col]===2 && 'p2')" x-bind:id="'h-row-'+row+'-col-'+col" x-bind:style="'top:'+row*cell_size+'px;left:'+col*cell_size+'px;  width:'+cell_size+'px;'"></div>
+                            <div @click="click_edge" class="edge h-edge" :class="class_edge_color('h',row,col)" x-bind:id="get_id('h',row,col)" x-bind:style="style_edge_h(row,col)"></div>
                         </template>
-                        <template x-if="col < size">
-                            <div @click="click_edge2" class="edge v-edge" :class="(edges['v-row-'+row+'-col-'+col]===1 && 'p1') || (edges['v-row-'+row+'-col-'+col]===2 && 'p2')" x-bind:id="'v-row-'+row+'-col-'+col" x-bind:style="'top:'+col*cell_size+'px;left:'+(row*cell_size-2)+'px;height:'+cell_size+'px;'"></div>
+                        <template x-if="row < size">
+                            <div @click="click_edge" class="edge v-edge" :class="class_edge_color('v',row,col)"  x-bind:id="get_id('v',row,col)" x-bind:style="style_edge_v(row, col)"></div>
                         </template>
-                        <div class="vertex" x-bind:style="'top:'+row*cell_size+'px;left:'+col*cell_size+'px;'"></div>
+                        <div class="vertex" x-bind:style="style_vertex(row,col)"></div>
                     </div>
                 </template>
             </template>
@@ -69,9 +69,14 @@
                         this.size = val;
                         this.init_edge_and_box_data();
                     },
-                    click_edge2(e){
-                      console.log("click edge2",e.target.id);
-                      this.edges[e.target.id] = this.player;
+                    player_toggle(){
+                      this.player = this.player === 1 ? 2 : 1;
+                    },
+                    click_edge(e){
+                      let id = e.target.id
+                      console.log("click edge",id);
+                      this.edges[id] = this.player;
+                      this.check_for_closed_box();
                     },
                     start(){
                       console.log("start game");
@@ -94,15 +99,100 @@
                       }
                       console.log(this.edges, this.boxes);
                     },
+                    check_for_closed_box() {
+                      let a_box_was_enclosed = false;
+
+                      for (let col = 0; col <= this.size; col++) {
+                        for (let row = 0; row <= this.size; row++) {
+                          //console.log(this.get_id("h", row, col), this.edges[this.get_id("h", row, col)]);
+                          let a = this.get_id("h", row, col);
+                          let b = this.get_id("h", row + 1, col);
+                          let l = this.get_id("v", row, col);
+                          let r = this.get_id("v", row, col + 1);
+                          const above = this.edges[a];
+                          const below = this.edges[b];
+                          const left = this.edges[l];
+                          const right = this.edges[r];
+                          const box_id = this.get_id("b", row, col);
+                          const is_empty = !(box_id in this.boxes) || this.boxes[box_id] === 0;
+                          if (box_id==="b-row-0-col-3") console.log({ a,b,l,r,above, right, below, left, box_id, is_empty });
+                          let this_box_was_enclosed = above && below && left && right && is_empty;
+                          if (this_box_was_enclosed) {
+                            console.log("### enclosed");
+
+                            a_box_was_enclosed = true;
+
+                            // update box colour
+                            this.boxes[box_id] = this.player;
+
+                            //Update score
+                            //scores[`p${player}`] = count_player_boxes();
+                            //document.getElementById(`box_count_p${player}`).textContent =
+                            //  "" + scores[`p${player}`];
+
+                            //Check for winner
+                            //let winner_message = "It's a draw! Play again?";
+                            //let winner = player;
+                            //if (scores.p1 + scores.p2 === this.size * this.size) {
+                            //  if (scores.p1 > scores.p2) {
+                            //    winner_message = "Player 1 wins! Play again?";
+                            //    games.p1 = games.p1 + 1;
+                            //    winner = 1;
+                            //  } else if (scores.p2 > scores.p1) {
+                            //    winner_message = "Player 2 wins! Play again?";
+                            //    games.p2 = games.p2 + 1;
+                            //    winner = 2;
+                            //  }
+                            //  if (winner !== player) this.player_toggle();
+                            //  winner_el.textContent = winner_message;
+                            //  winner_el.className = `p${player}`;
+                            //  document.getElementById(`games_p${player}`).textContent =
+                            //    games[`p${player}`];
+                            //}
+                          }
+                        }
+                      }
+                      if (!a_box_was_enclosed) this.player_toggle();
+                    },
+                    get_row_col_from_id(id) {
+                      const parts = id.split("-"); // ["h", "row", "0", "col", "0"]
+                      const row = parseInt(parts[2], 10);
+                      const col = parseInt(parts[4], 10);
+
+                      let is_vertical = id[0] === "v";
+                      let direction = is_vertical ? "vertical" : "horizontal";
+                      let box_row = row;
+                      let box_col = is_vertical ? col - 1 : col;
+
+                      return { row, col, box_row, box_col, is_vertical, direction };
+                    },
                     get_id(prefix, row, col) {
                       return `${prefix}-row-${row}-col-${col}`;
                     },
-                    get columns() {
-                        return Array.from({ length: this.size + 1 }, (_, index) => index);
+                    style_square(row, col){
+                      return `top:${row * this.cell_size}px; left:${col * this.cell_size}px; width:${this.cell_size}px; height:${this.cell_size}px;`;
                     },
-                    get style_grid2() {
-                        let s = this.size * this.cell_size;
-                        return 'width:'+s+'px;height:'+s+'px;';
+                    style_edge_h(row, col){
+                      return `top:${row * this.cell_size}px; left:${col * this.cell_size}px; width:${this.cell_size}px;`;
+                    },
+                    style_edge_v(row, col){
+                      return `top:${row * this.cell_size}px; left:${(col * this.cell_size - 2)}px; height: ${this.cell_size}px;`;
+                    },
+                    style_vertex(row, col){
+                      return `top: ${row * this.cell_size}px; left: ${col * this.cell_size}px;`;
+                    },
+                    class_edge_color(prefix, row, col){
+                      return (this.edges[this.get_id(prefix,row,col)]===1 && 'p1') || (this.edges[this.get_id(prefix  ,row,col)]===2 && 'p2')
+                    },
+                    class_box_color(prefix, row, col){
+                      return (this.boxes[this.get_id(prefix,row,col)]===1 && 'p1') || (this.boxes[this.get_id(prefix  ,row,col)]===2 && 'p2')
+                    },
+                    get columns() {
+                      return Array.from({ length: this.size + 1 }, (_, index) => index);
+                    },
+                    get style_grid() {
+                      let s = this.size * this.cell_size;
+                      return `width:${s}px; height:${s}px;`;
                     }
                 }));
             });

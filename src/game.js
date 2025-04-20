@@ -34,14 +34,14 @@ function reset_game(size = gridCount) {
   score2.className = "hide";
   scores = { p1: 0, p2: 0 };
   player = 1;
-  document.body.className = `p${player}`;
+  //document.body.className = `p${player}`;
   box_count_p1.textContent = "0";
   box_count_p2.textContent = "0";
   winner_el.className = "";
   resize_grid(size);
   //init_edge_and_box_data();
   show_grid_size();
-  draw_grid();
+  //draw_grid();
 }
 
 function start() {
@@ -63,47 +63,10 @@ function show_grid_size() {
   grid_size.className = "";
 }
 
-function draw_grid() {
-  //console.log("draw_grid");
-  clear_grid();
-  draw_grid_squares();
-  draw_horizontal_edges();
-  draw_vertical_edges();
-  draw_vertices();
-}
-
-function clear_grid() {
-  //console.log("clear_grid");
-  height = squareSize * gridCount;
-  styleEl.textContent = `
-:root {
-  --square: ${squareSize}px;
-  --grid-height: ${height}px;
-  --circle: ${circle}px;
-}`;
-  grid.innerHTML = "";
-  gridContainer.style.width = `${height}px`;
-}
-
-function draw_grid_squares() {}
-
-function draw_horizontal_edges() {}
-
-function draw_vertical_edges() {}
-
-function draw_vertices() {}
-
-function click_edge(e) {
-  //console.log("click_edge");
-  e.stopPropagation();
-  e.target.className = e.target.className + ` p${player}`;
-  update_state(e);
-}
-
 function update_state(e) {
   //console.log("update_state");
-  let id = e.target.id;
-  edges[id] = true;
+  //let id = e.target.id;
+  //edges[id] = true;
   check_for_closed_box(id);
 }
 
@@ -190,7 +153,7 @@ function get_id(prefix, row, col) {
 function toggle_player() {
   //console.log("toggle_player");
   player = player === 1 ? 2 : 1;
-  document.body.className = `p${player}`;
+  //document.body.className = `p${player}`;
 }
 
 function count_player_boxes() {

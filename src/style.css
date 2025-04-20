@@ -5,6 +5,7 @@
     --p1: deeppink;
     --p2: dodgerblue;
     --primary: var(--p1);
+    --circle: 10px;
 }
 
 body.p1 {
@@ -181,8 +182,6 @@ img {
 /* Grid squares */
 .grid-square {
     position: absolute;
-    width: var(--square);
-    height: var(--square);
     box-sizing: border-box;
     border: 4px solid var(--edge);
 }
