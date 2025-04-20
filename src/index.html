@@ -4,6 +4,7 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Clicky grid</title>
+        <meta name="description" content="A simple, fun, classic, two-player game where you strategically click lines to capture more boxes than your opponent.">
         <link rel="icon" type="image/svg+xml" href="favicon.svg" />
         <link rel="stylesheet" href="style.css" />
         <script defer src="alpinejs@3.14.9.js"></script>
@@ -11,45 +12,51 @@
         <script src="game.js"></script>
     </head>
     <body :class="'p'+player" x-data="state">
-        <h1>
-            <span class="score" :class="is_playing && 'show_inline_block'"><span id="box_count_p1" x-text="score_p1"></span><img src="left.svg" class="left" /></span>
-            Clicky grid
-            <span class="score" :class="is_playing && 'show_inline_block'"><img src="right.svg" class="right" /><span id="box_count_p2" x-text="score_p2"></span></span>
-        </h1>
+        <div>
+            <span class="score" :class="is_playing && 'show_inline_block'"><img src="left.svg" class="left" /><span id="box_count_p1" x-text="score_p1"></span></span>
+            <h1>Clicky grid</h1>
+            <span class="score" :class="is_playing && 'show_inline_block'"><span id="box_count_p2" x-text="score_p2"></span><img src="right.svg" class="right" /></span>
+        </div>
         <div id="grid_size" :class="is_playing && 'hide'">
             <h2>Choose grid size</h2>
             <div id="size_row_1">
                 <template x-for="item in size_row_1">
-                    <div @click="size_update(item)" x-text="item + ' x ' + item" :class="size === item && 'highlight'"></div>
+                    <button @click="size_update(item)" tabindex="0" x-bind:aria-label="'Select grid size ' + item + ' x ' + item" x-text="item + ' x ' + item" :class="size === item && 'highlight'"></button>
                 </template>
             </div>
             <div id="size_row_2">
                 <template x-for="item in size_row_2">
-                    <div @click="size_update(item)" x-text="item + ' x ' + item" :class="size === item && 'highlight'"></div>
+                    <button @click="size_update(item)" tabindex="0" x-bind:aria-label="'Select grid size ' + item + ' x ' + item" x-text="item + ' x ' + item" :class="size === item && 'highlight'"></buttondiv>
                 </template>
             </div>
         </div>
-        <div @click="start" id="play" :class="is_playing && 'hide'">Play!</div>
-        <h2 @click="reset_game" id="winner" :class="class_winner_color" x-text="winner_message"></h2>
-        <div id="grid" x-bind:style="style_grid" :class="is_playing && 'grid-is-playable'">
-            <template x-for="col in columns">
-                <template x-for="row in columns">
-                    <div>
+        <button @click="start" @keyup.space="start" tabindex="0" id="play" :class="is_playing && 'hide'">Play!</button>
+        <h2><button @click="reset_game" @keyup.space="reset_game" tabindex="0" id="winner" :class="class_winner_color" x-text="winner_message"></button></h2>
+        <div id="grid" x-bind:style="style_grid" :class="(winner_message==='' && is_playing) && 'grid-is-playable'">
+            <template x-for="row in columns">
+                <div>
+                    <template x-for="col in columns">
+                        <div class="vertex" x-bind:style="style_vertex(row,col)"></div>
+                    </template>
+                    <template x-for="col in columns">
+                        <template x-if="col < size">
+                            <div aria-role="button" aria-pressed="false" x-bind:aria-label="'draw line at row ' + row + ' col ' +col" @click="click_edge" @keyup.space="click_edge" x-bind:tabindex="winner_message === '' && is_playing ? 0 : -1" class="edge h-edge" :class="class_edge_color('h',row,col)" x-bind:id="get_id('h',row,col)" x-bind:style="style_edge_h(row,col)"></div>
+                        </template>
+                    </template>
+                    <template x-for="col in columns">
+                        <template x-if="row < size">
+                            <div aria-role="button" aria-pressed="false" x-bind:aria-label="'draw line at row ' + row + ' col ' +col" @click="click_edge" @keyup.space="click_edge" x-bind:tabindex="winner_message === '' && is_playing ? 0 : -1" class="edge v-edge" :class="class_edge_color('v',row,col)"  x-bind:id="get_id('v',row,col)" x-bind:style="style_edge_v(row, col)"></div>
+                        </template>
+                    </template>
+                    <template x-for="col in columns">
                         <template x-if="col < size && row < size">
                             <div class="grid-square" :class="class_box_color('b',row,col)" x-bind:id="get_id('b',row,col)" x-bind:style="style_square(row,col)"></div>
                         </template>
-                        <template x-if="col < size">
-                            <div @click="click_edge" class="edge h-edge" :class="class_edge_color('h',row,col)" x-bind:id="get_id('h',row,col)" x-bind:style="style_edge_h(row,col)"></div>
-                        </template>
-                        <template x-if="row < size">
-                            <div @click="click_edge" class="edge v-edge" :class="class_edge_color('v',row,col)"  x-bind:id="get_id('v',row,col)" x-bind:style="style_edge_v(row, col)"></div>
-                        </template>
-                        <div class="vertex" x-bind:style="style_vertex(row,col)"></div>
-                    </div>
-                </template>
+                    </template>
+                </div>
             </template>
         </div>
-        <div id="restart" @click="restart_game" :class="(winner_message==='' && is_playing) && 'show_block'" x-text="restart_message"></div>
+        <div id="restart" @click="restart_game" @keyup.space="restart_game" tabindex="0" :class="(winner_message==='' && is_playing) && 'show_block'" x-text="restart_message"></div>
         <div id="games"><span id="games_p1" x-text="games_p1"></span></span> Games won <span id="games_p2" x-text="games_p2"></span></div>
         <div id="footer">Made with ❤️ by <a target="_blank" href="https://github.com/Swiftaff">Swiftaff</a></div>
     </body>

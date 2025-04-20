@@ -44,7 +44,8 @@ document.addEventListener("alpine:init", () => {
         }, 10000);
       }
     },
-    size_update(val) {
+    size_update(val, e) {
+      console.log("size_update", val, e);
       this.size = val;
       this.init_edge_and_box_data();
     },
@@ -53,9 +54,12 @@ document.addEventListener("alpine:init", () => {
     },
     click_edge(e) {
       let id = e.target.id;
-      console.log("click edge", id);
-      this.edges[id] = this.player;
-      this.check_for_closed_box();
+      if (this.edges[id]) {
+        //nop if previously clicked
+      } else {
+        this.edges[id] = this.player;
+        this.check_for_closed_box();
+      }
     },
     start() {
       console.log("start game");
@@ -124,6 +128,7 @@ document.addEventListener("alpine:init", () => {
           this.winner_message = "It's a draw! Play again?";
         }
         this.winner_player = winner;
+        setTimeout(() => document.getElementById("winner").focus(), 200);
         if (winner !== this.player) this.player_toggle();
       }
     },
@@ -185,10 +190,10 @@ document.addEventListener("alpine:init", () => {
       return `width:${s}px; height:${s}px;`;
     },
     get score_p1() {
-      return this.scores.p1;
+      return "Player 1 score: " + this.scores.p1;
     },
     get score_p2() {
-      return this.scores.p2;
+      return "Player 2 score: " + this.scores.p2;
     },
     get games_p1() {
       return this.games.p1;
