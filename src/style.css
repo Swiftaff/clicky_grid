@@ -2,9 +2,11 @@
     --bgnd: #333;
     --edge: #555;
     --black: black;
-    --p1: deeppink;
+    --p1: #e2007a;
+    --p1-light: #ff5eb5;
     --p2: dodgerblue;
-    --primary: var(--p1);
+    --p2-light: #40a1ff;
+    --primary: var(--p1-light);
     --circle: 10px;
     font-size: 18px;
 }
@@ -23,7 +25,7 @@ body.p1 {
         color: var(--edge);
     }
     #footer a {
-        color: var(--p1);
+        color: var(--p1-light);
     }
     #grid_size div button:hover,
     #grid_size div button:focus {
@@ -32,7 +34,7 @@ body.p1 {
 }
 
 body.p2 {
-    --primary: var(--p2);
+    --primary: var(--p2-light);
     img.left {
         background-color: var(--edge);
     }
@@ -46,7 +48,7 @@ body.p2 {
         color: var(--p2);
     }
     #footer a {
-        color: var(--p2);
+        color: var(--p2-light);
     }
     #grid_size div button:hover,
     #grid_size div button:focus {
@@ -161,7 +163,7 @@ img {
 }
 
 #games_p1 {
-    color: var(--p1);
+    color: var(--p1-light);
     border: var(--p1) 2px solid;
     font-weight: bold;
     display: inline-block;
@@ -171,7 +173,7 @@ img {
 }
 
 #games_p2 {
-    color: var(--p2);
+    color: var(--p2-light);
     border: var(--p2) 2px solid;
     font-weight: bold;
     display: inline-block;
