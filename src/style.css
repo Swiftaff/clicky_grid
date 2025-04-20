@@ -79,6 +79,13 @@ img {
     cursor: none;
 }
 
+.show_inline_block {
+    display: inline-block !important;
+}
+.show_block {
+    display: block !important;
+}
+
 #winner.p1 {
     background-color: var(--p1);
     display: inline-block;
@@ -154,7 +161,8 @@ img {
     padding: 10px;
 }
 
-.hide {
+.hide,
+.score {
     display: none !important;
 }
 

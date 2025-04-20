@@ -11,10 +11,9 @@
     </head>
     <body :class="'p'+player" x-data="state">
         <h1>
-            <span id="score1"><span id="box_count_p1">0</span><img src="left.svg" class="left" /></span>Clicky grid <span id="score2"><img
-                src="right.svg"
-                class="right"
-            /><span id="box_count_p2">0</span></span>
+            <span class="score" :class="is_playing && 'show_inline_block'"><span id="box_count_p1" x-text="score_p1"></span><img src="left.svg" class="left" /></span>
+            Clicky grid
+            <span class="score" :class="is_playing && 'show_inline_block'"><img src="right.svg" class="right" /><span id="box_count_p2" x-text="score_p2"></span></span>
         </h1>
         <div id="grid_size" :class="is_playing && 'hide'">
             <h2>Choose grid size</h2>
@@ -30,7 +29,7 @@
             </div>
         </div>
         <div @click="start" id="play" :class="is_playing && 'hide'">Play!</div>
-        <h2 id="winner"></h2>
+        <h2 @click="reset_game" id="winner" :class="class_winner_color" x-text="winner_message"></h2>
         <div id="grid" x-bind:style="style_grid" :class="is_playing && 'grid-is-playable'">
             <template x-for="col in columns">
                 <template x-for="row in columns">
@@ -51,20 +50,36 @@
         </div>
         <div id="grid"></div>
         <div id="restart">Restart this game?</div>
-        <div id="games"><span id="games_p1">0</span></span> Games won <span id="games_p2">0</span></div>
+        <div id="games"><span id="games_p1" x-text="games_p1"></span></span> Games won <span id="games_p2" x-text="games_p2"></span></div>
         <div id="footer">Made with ❤️ by <a target="_blank" href="https://github.com/Swiftaff">Swiftaff</a></div>
         <script src="game.js" defer></script>
         <script>
             document.addEventListener('alpine:init', () => {
                 Alpine.data('state', () => ({
-                    size: 2,
+                    //constants
                     cell_size: 50,
                     size_row_1: [1, 2, 3, 4],
                     size_row_2: [5, 6, 7, 8],
+                    //remaing across games
+                    size: 2,
+                    games: { p1: 0, p2: 0 },
+                    //reset each game
                     is_playing: false,
                     edges: {},
                     boxes: {},
                     player: 1,
+                    scores: { p1: 0, p2: 0 },
+                    winner_message: "",
+                    winner_player: 0,
+                    reset_game(){
+                      this.is_playing = false;
+                      this.edges= {};
+                      this.boxes= {};
+                      this.player = 1;
+                      this.scores = { p1: 0, p2: 0 };
+                      this.winner_message = "";
+                      this.winner_player = 0;
+                    },
                     size_update(val) {
                         this.size = val;
                         this.init_edge_and_box_data();
@@ -104,7 +119,6 @@
 
                       for (let col = 0; col <= this.size; col++) {
                         for (let row = 0; row <= this.size; row++) {
-                          //console.log(this.get_id("h", row, col), this.edges[this.get_id("h", row, col)]);
                           let a = this.get_id("h", row, col);
                           let b = this.get_id("h", row + 1, col);
                           let l = this.get_id("v", row, col);
@@ -115,44 +129,44 @@
                           const right = this.edges[r];
                           const box_id = this.get_id("b", row, col);
                           const is_empty = !(box_id in this.boxes) || this.boxes[box_id] === 0;
-                          if (box_id==="b-row-0-col-3") console.log({ a,b,l,r,above, right, below, left, box_id, is_empty });
+                          //console.log({ a,b,l,r,above, right, below, left, box_id, is_empty });
                           let this_box_was_enclosed = above && below && left && right && is_empty;
                           if (this_box_was_enclosed) {
-                            console.log("### enclosed");
-
                             a_box_was_enclosed = true;
-
-                            // update box colour
                             this.boxes[box_id] = this.player;
-
-                            //Update score
-                            //scores[`p${player}`] = count_player_boxes();
-                            //document.getElementById(`box_count_p${player}`).textContent =
-                            //  "" + scores[`p${player}`];
-
-                            //Check for winner
-                            //let winner_message = "It's a draw! Play again?";
-                            //let winner = player;
-                            //if (scores.p1 + scores.p2 === this.size * this.size) {
-                            //  if (scores.p1 > scores.p2) {
-                            //    winner_message = "Player 1 wins! Play again?";
-                            //    games.p1 = games.p1 + 1;
-                            //    winner = 1;
-                            //  } else if (scores.p2 > scores.p1) {
-                            //    winner_message = "Player 2 wins! Play again?";
-                            //    games.p2 = games.p2 + 1;
-                            //    winner = 2;
-                            //  }
-                            //  if (winner !== player) this.player_toggle();
-                            //  winner_el.textContent = winner_message;
-                            //  winner_el.className = `p${player}`;
-                            //  document.getElementById(`games_p${player}`).textContent =
-                            //    games[`p${player}`];
-                            //}
+                            this.scores[`p${this.player}`] = this.count_player_boxes();
+                            this.check_for_winner();
                           }
                         }
                       }
                       if (!a_box_was_enclosed) this.player_toggle();
+                    },
+                    check_for_winner(){
+                      this.winner_message = "";
+                      this.winner_player = 0;
+                      let winner = this.player;
+                      let all_boxes_enclosed = this.scores.p1 + this.scores.p2 === this.size * this.size;
+                      if (all_boxes_enclosed) {
+                        console.log("all_boxes_enclosed");
+                        if (this.scores.p1 > this.scores.p2) {
+                          this.winner_message = "Player 1 wins! Play again?";
+                          this.games.p1 = this.games.p1 + 1;
+                          winner = 1;
+                        } else if (this.scores.p2 > this.scores.p1) {
+                          this.winner_message = "Player 2 wins! Play again?";
+                          this.games.p2 = this.games.p2 + 1;
+                          winner = 2;
+                        } else {
+                          this.winner_message = "It's a draw! Play again?"
+                        }
+                        this.winner_player = winner;
+                        if (winner !== this.player) this.player_toggle();
+                      }
+                    },
+                    count_player_boxes() {
+                      return Object.values(this.boxes).reduce((count, value) => {
+                        return value === this.player ? count + 1 : count;
+                      }, 0);
                     },
                     get_row_col_from_id(id) {
                       const parts = id.split("-"); // ["h", "row", "0", "col", "0"]
@@ -187,12 +201,27 @@
                     class_box_color(prefix, row, col){
                       return (this.boxes[this.get_id(prefix,row,col)]===1 && 'p1') || (this.boxes[this.get_id(prefix  ,row,col)]===2 && 'p2')
                     },
+                    class_winner_color(){
+                      return ((this.winner_player===1 && 'p1') || (this.winner_player===2 && 'p2') + (this.winner_message && ' show_block'));
+                    },
                     get columns() {
                       return Array.from({ length: this.size + 1 }, (_, index) => index);
                     },
                     get style_grid() {
                       let s = this.size * this.cell_size;
                       return `width:${s}px; height:${s}px;`;
+                    },
+                    get score_p1(){
+                      return this.scores.p1;
+                    },
+                    get score_p2(){
+                      return this.scores.p2;
+                    },
+                    get games_p1(){
+                      return this.games.p1;
+                    },
+                    get games_p2(){
+                      return this.games.p2;
                     }
                 }));
             });
