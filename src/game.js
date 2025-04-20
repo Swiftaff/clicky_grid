@@ -7,7 +7,6 @@ const score1 = document.getElementById(`score1`);
 const score2 = document.getElementById(`score2`);
 const box_count_p1 = document.getElementById(`box_count_p1`);
 const box_count_p2 = document.getElementById(`box_count_p2`);
-const play_button = document.getElementById(`play`);
 const styleEl = document.createElement("style");
 document.head.appendChild(styleEl);
 const squareSize = 50;
@@ -21,7 +20,6 @@ let edges = {};
 let boxes = {};
 let restart_confirmed = false;
 winner_el.addEventListener("click", () => reset_game(gridCount));
-play_button.addEventListener("click", start);
 restart_button.addEventListener("click", restart);
 
 reset_game();
@@ -40,9 +38,8 @@ function reset_game(size = gridCount) {
   box_count_p1.textContent = "0";
   box_count_p2.textContent = "0";
   winner_el.className = "";
-  play_button.className = "";
   resize_grid(size);
-  init_edge_and_box_data();
+  //init_edge_and_box_data();
   show_grid_size();
   draw_grid();
 }
@@ -51,7 +48,6 @@ function start() {
   //console.log("start");
   grid.className = "grid-is-playable";
   grid_size.className = "hide";
-  play_button.className = "hide";
   restart_button.className = "";
   score1.className = "";
   score2.className = "";
@@ -60,30 +56,6 @@ function start() {
 function resize_grid(selected_size) {
   //console.log("resize_grid");
   gridCount = selected_size;
-}
-
-function init_edge_and_box_data() {
-  //console.log("init_data");
-  edges = {};
-  boxes = {};
-  for (let row = 0; row <= gridCount; row++) {
-    for (let col = 0; col <= gridCount; col++) {
-      //don't need last column of horizontal edges
-      if (col < gridCount) {
-        edges[get_id("h", row, col)] = false;
-      }
-
-      //don't need last row of vertical edges
-      if (row < gridCount) {
-        edges[get_id("v", row, col)] = false;
-      }
-
-      //don't need last row OR col for boxes
-      if (col < gridCount && row < gridCount) {
-        boxes[get_id("b", row, col)] = 0;
-      }
-    }
-  }
 }
 
 function show_grid_size() {
@@ -115,47 +87,9 @@ function clear_grid() {
 
 function draw_grid_squares() {}
 
-function draw_horizontal_edges() {
-  /*
-  //console.log("draw_hor_edges");
-  // There are gridCount+1 horizontal edge lines, each having gridCount segments.
-  for (let row = 0; row <= gridCount; row++) {
-    for (let col = 0; col < gridCount; col++) {
-      const el = document.createElement("div");
-      el.className = "edge h-edge";
-      el.id = get_id("h", row, col);
-      // Position the edge at the i-th horizontal line.
-      // Subtract half the edge's thickness (2px) to center it.
-      el.style.top = row * squareSize - 2 + "px";
-      el.style.left = col * squareSize + "px";
-      el.style.width = squareSize + "px";
-      el.addEventListener("click", click_edge);
-      gridContainer.appendChild(el);
-    }
-  }
-  */
-}
+function draw_horizontal_edges() {}
 
-function draw_vertical_edges() {
-  /*
-  //console.log("draw_vert_edges");
-  // There are gridCount+1 vertical edge lines, each having gridCount segments.
-  for (let col = 0; col <= gridCount; col++) {
-    for (let row = 0; row < gridCount; row++) {
-      const el = document.createElement("div");
-      el.className = "edge v-edge";
-      el.id = get_id("v", row, col);
-      // Position the edge at the col-th vertical line.
-      // Subtract half the edge's thickness (2px) to center it.
-      el.style.left = col * squareSize - 2 + "px";
-      el.style.top = row * squareSize + "px";
-      el.style.height = squareSize + "px";
-      el.addEventListener("click", click_edge);
-      gridContainer.appendChild(el);
-    }
-  }
-  */
-}
+function draw_vertical_edges() {}
 
 function draw_vertices() {}
 

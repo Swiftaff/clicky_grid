@@ -16,8 +16,7 @@
                 class="right"
             /><span id="box_count_p2">0</span></span>
         </h1>
-
-        <div id="grid_size">
+        <div id="grid_size" :class="is_playing && 'hide'">
             <h2>Choose grid size</h2>
             <div id="size_row_1">
                 <template x-for="item in size_row_1">
@@ -30,9 +29,9 @@
                 </template>
             </div>
         </div>
-        <div id="play">Play!</div>
+        <div @click="start" id="play" :class="is_playing && 'hide'">Play!</div>
         <h2 id="winner"></h2>
-        <div id="grid2" x-bind:style="style_grid2">
+        <div id="grid2" x-bind:style="style_grid2" :class="is_playing && 'grid-is-playable'">
             <template x-for="col in columns">
                 <template x-for="row in columns">
                     <div>
@@ -40,10 +39,10 @@
                             <div class="grid-square" x-bind:id="'b-row-'+row+'-col-'+col" x-bind:style="'top:'+row*cell_size+'px;left:'+col*cell_size+'px;'"></div>
                         </template>
                         <template x-if="col < size">
-                            <div @click="click_edge2" class="edge h-edge" x-bind:id="'h-row-'+row+'-col-'+col" x-bind:style="'top:'+row*cell_size+'px;left:'+col*cell_size+'px;  width:'+cell_size+'px;'"></div>
+                            <div @click="click_edge2" class="edge h-edge" :class="(edges['h-row-'+row+'-col-'+col]===1 && 'p1') || (edges['h-row-'+row+'-col-'+col]===2 && 'p2')" x-bind:id="'h-row-'+row+'-col-'+col" x-bind:style="'top:'+row*cell_size+'px;left:'+col*cell_size+'px;  width:'+cell_size+'px;'"></div>
                         </template>
                         <template x-if="col < size">
-                            <div @click="click_edge2" class="edge v-edge" x-bind:id="'v-row-'+row+'-col-'+col" x-bind:style="'top:'+col*cell_size+'px;left:'+(row*cell_size-2)+'px;height:'+cell_size+'px;'"></div>
+                            <div @click="click_edge2" class="edge v-edge" :class="(edges['v-row-'+row+'-col-'+col]===1 && 'p1') || (edges['v-row-'+row+'-col-'+col]===2 && 'p2')" x-bind:id="'v-row-'+row+'-col-'+col" x-bind:style="'top:'+col*cell_size+'px;left:'+(row*cell_size-2)+'px;height:'+cell_size+'px;'"></div>
                         </template>
                         <div class="vertex" x-bind:style="'top:'+row*cell_size+'px;left:'+col*cell_size+'px;'"></div>
                     </div>
@@ -62,17 +61,48 @@
                     cell_size: 50,
                     size_row_1: [1, 2, 3, 4],
                     size_row_2: [5, 6, 7, 8],
+                    is_playing: false,
+                    edges: {},
+                    boxes: {},
+                    player: 1,
                     size_update(val) {
                         this.size = val;
+                        this.init_edge_and_box_data();
                     },
                     click_edge2(e){
-                      console.log("click edge",e);
+                      console.log("click edge2",e.target.id);
+                      this.edges[e.target.id] = this.player;
+                    },
+                    start(){
+                      console.log("start game");
+                      this.is_playing = true;
+                    },
+                    init_edge_and_box_data() {
+                      this.edges = {};
+                      this.boxes = {};
+                      for (let row = 0; row <= this.size; row++) {
+                        for (let col = 0; col <= this.size; col++) {
+                          //don't need last column of horizontal edges
+                          if (col < this.size) this.edges[this.get_id("h", row, col)] = 0;
+
+                          //don't need last row of vertical edges
+                          if (row < this.size) this.edges[this.get_id("v", row, col)] = 0;
+
+                          //don't need last row OR col for boxes
+                          if (col < this.size && row < this.size) this.boxes[this.get_id("b", row, col)] = 0;
+                        }
+                      }
+                      console.log(this.edges, this.boxes);
+                    },
+                    get_id(prefix, row, col) {
+                      return `${prefix}-row-${row}-col-${col}`;
                     },
                     get columns() {
                         return Array.from({ length: this.size + 1 }, (_, index) => index);
                     },
                     get style_grid2() {
-                        return 'width: ' + this.size * this.cell_size + 'px';
+                        let s = this.size * this.cell_size;
+                        return 'width:'+s+'px;height:'+s+'px;';
                     }
                 }));
             });
