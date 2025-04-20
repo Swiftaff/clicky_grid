@@ -21,12 +21,12 @@
             <h2>Choose grid size</h2>
             <div id="size_row_1">
                 <template x-for="item in size_row_1">
-                    <button @click="size_update(item)" tabindex="0" x-bind:aria-label="'Select grid size ' + item + ' x ' + item" x-text="item + ' x ' + item" :class="size === item && 'highlight'"></button>
+                    <button @click="size_update(item)" tabindex="0" :aria-label="'Select grid size ' + item + ' x ' + item" x-text="item + ' x ' + item" :class="size === item && 'highlight'"></button>
                 </template>
             </div>
             <div id="size_row_2">
                 <template x-for="item in size_row_2">
-                    <button @click="size_update(item)" tabindex="0" x-bind:aria-label="'Select grid size ' + item + ' x ' + item" x-text="item + ' x ' + item" :class="size === item && 'highlight'"></buttondiv>
+                    <button @click="size_update(item)" tabindex="0" :aria-label="'Select grid size ' + item + ' x ' + item" x-text="item + ' x ' + item" :class="size === item && 'highlight'"></buttondiv>
                 </template>
             </div>
         </div>
@@ -40,12 +40,12 @@
                     </template>
                     <template x-for="col in columns">
                         <template x-if="col < size">
-                            <div aria-role="button" aria-pressed="false" x-bind:aria-label="'draw line at row ' + row + ' col ' +col" @click="click_edge" @keyup.space="click_edge" x-bind:tabindex="winner_message === '' && is_playing ? 0 : -1" class="edge h-edge" :class="class_edge_color('h',row,col)" x-bind:id="get_id('h',row,col)" x-bind:style="style_edge_h(row,col)"></div>
+                            <div aria-role="button" aria-pressed="false" :aria-label="'draw line at row ' + row + ' col ' +col" @click="click_edge" @keyup.space="click_edge" x-bind:tabindex="winner_message === '' && is_playing ? 0 : -1" class="edge h-edge" :class="class_edge_color('h',row,col)" x-bind:id="get_id('h',row,col)" x-bind:style="style_edge_h(row,col)"></div>
                         </template>
                     </template>
                     <template x-for="col in columns">
                         <template x-if="row < size">
-                            <div aria-role="button" aria-pressed="false" x-bind:aria-label="'draw line at row ' + row + ' col ' +col" @click="click_edge" @keyup.space="click_edge" x-bind:tabindex="winner_message === '' && is_playing ? 0 : -1" class="edge v-edge" :class="class_edge_color('v',row,col)"  x-bind:id="get_id('v',row,col)" x-bind:style="style_edge_v(row, col)"></div>
+                            <div aria-role="button" aria-pressed="false" :aria-label="'draw line at row ' + row + ' col ' +col" @click="click_edge" @keyup.space="click_edge" x-bind:tabindex="winner_message === '' && is_playing ? 0 : -1" class="edge v-edge" :class="class_edge_color('v',row,col)"  x-bind:id="get_id('v',row,col)" x-bind:style="style_edge_v(row, col)"></div>
                         </template>
                     </template>
                     <template x-for="col in columns">
