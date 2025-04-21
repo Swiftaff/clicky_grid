@@ -64,7 +64,7 @@
             </label>
         </div>
         <div id="restart" @click="restart_game" @keyup.space="restart_game" tabindex="0" :class="(winner_message==='' && is_playing) && 'show_block'" x-text="restart_message"></div>
-        <div id="games"><span id="games_p1" x-text="games_p1"></span></span> Games won <span id="games_p2" x-text="games_p2"></span></div>
+        <div id="games"><span id="games_p1" x-text="games_p1"></span> Games won <span id="games_p2" x-text="games_p2"></span></div>
         <div id="footer">Made with ❤️ by <a target="_blank" href="https://github.com/Swiftaff">Swiftaff</a></div>
     </body>
 </html>
